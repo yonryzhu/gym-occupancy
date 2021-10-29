@@ -1,3 +1,6 @@
+from datetime import datetime
+from typing import Optional
+
 from fastapi import APIRouter, Depends
 
 import crud
@@ -20,8 +23,12 @@ router = APIRouter()
 
 
 @router.get("/records")
-def get_all_records(db: Session = Depends(get_db)) -> list[schemas.Record]:
-    records = crud.get_records(db)
+def get_all_records(
+    db: Session = Depends(get_db),
+    start_time: Optional[datetime] = None,
+    end_time: Optional[datetime] = None,
+) -> list[schemas.Record]:
+    records = crud.get_records(db, start_time, end_time)
     return records
 
 
@@ -31,3 +38,9 @@ def create_record(
 ) -> schemas.Record:
     record = crud.create_record(db, record)
     return record
+
+
+@router.patch("/records")
+def create_records(records: list[schemas.Record], db: Session = Depends(get_db)):
+    records = crud.create_records(db, records)
+    return records
