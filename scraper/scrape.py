@@ -1,3 +1,4 @@
+import os
 from dataclasses import dataclass
 from datetime import datetime
 
@@ -14,7 +15,7 @@ class Record:
 
 
 def request_html() -> str:
-    """Returns the HTML from the FacilityOccupancy website"""
+    """Returns the HTML from the FacilityOccupancy API"""
     url = "https://recshop.ohio.edu/FacilityOccupancy/GetFacilityData"
     data = {
         "facilityId": "caf740dd-8722-4b9d-84de-073706aa2450",
@@ -49,15 +50,15 @@ def transform(tag: bs4.Tag, timestamp: datetime) -> Record:
 
 
 def load(record: Record) -> None:
-    """POSTs record data to the API"""
-    url = "https://apps.yonry.dev/gym/api/v1/records"
+    """POSTs record data to the app API"""
+    url = os.environ["API_ENDPOINT"]
     data = {
-        "timestamp": record.timestamp,
+        "timestamp": record.timestamp.isoformat(),
         "occupancy": record.occupancy,
         "remaining": record.remaining,
         "ratio": record.ratio,
     }
-    requests.post(url, data)
+    requests.post(url, json=data)
 
 
 if __name__ == "__main__":
