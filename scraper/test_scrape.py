@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 
 import bs4
@@ -47,12 +48,13 @@ def test_transform():
 
 
 def test_load(monkeypatch):
-    def mock_post(url, data):
-        assert data["timestamp"] == TIMESTAMP
-        assert data["occupancy"] == 25
-        assert data["remaining"] == 100
-        assert data["ratio"] == 0.25
+    def mock_post(url, json):
+        assert json["timestamp"] == TIMESTAMP.isoformat()
+        assert json["occupancy"] == 25
+        assert json["remaining"] == 100
+        assert json["ratio"] == 0.25
 
+    os.environ["API_ENDPOINT"] = "localhost"
     monkeypatch.setattr(requests, "post", mock_post)
 
     record = scrape.Record(TIMESTAMP, 25, 100, 0.25)
