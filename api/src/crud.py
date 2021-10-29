@@ -13,9 +13,9 @@ def get_records(
 ) -> list[models.Record]:
     q = db.query(models.Record)
     if start_time is not None:
-        q = q.filter(models.Record.timestamp >= start_time)
+        q = q.filter(models.Record.timestamp > start_time)
     if end_time is not None:
-        q = q.filter(models.Record.timestamp <= end_time)
+        q = q.filter(models.Record.timestamp < end_time)
     return q.all()
 
 
